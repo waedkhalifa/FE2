@@ -86,6 +86,39 @@ def searchByBookId(id):
     else:
         return 'Status code '+ str(req.status_code) +' indicates to something ERROR!',req.status_code
 
+@app.route('/purchase/<int:id>', methods=['POST'])
+def purchase(id):
+    x=next(ordCycle)
+    req = requests.get("{}/purchase/{}".format(x,id))
+
+    if req.status_code == 200:
+        result = req.json()  # content of json as dictionary
+        req2 = requests.get("{}/purchase/{}".format(next(ordCycle), id))
+
+        return jsonify(result)
+
+    elif req.status_code == 404:
+        return 'The server has not found anything matching the URI given',404
+
+    else:
+        return 'Status code '+ str(req.status_code) +' indicates to something ERROR!',req.status_code
+
+
+@app.route('/invalidate', methods=['POST'])
+def InvalidCache():
+    res = request.get_json()
+
+    f= open("cache.json", "r")
+    data = json.load(f)
+    print(res[0]["id"])
+    data["ids"].pop(str(res[0]["id"]),None)
+    data["srchTopic"].pop(str(res[0]["topic"]),None)
+    f.close()
+    f1=open("cache.json", "w")
+    json.dump(data, f1)
+    f1.close()
+
+    return '',200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=6000)
