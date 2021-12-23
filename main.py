@@ -50,6 +50,42 @@ def searchByBookTopic(topic):
         return 'Status code '+ str(req.status_code) +' indicates to something ERROR!',req.status_code
 
 
+@app.route('/searchID/<int:id>', methods=['GET'])
+def searchByBookId(id):
+
+    f = open('cache.json','r')
+    data = json.load(f)
+
+    if id in data["ids"]:
+        if data["ids"][id] != None:
+            return jsonify(data["ids"])
+
+    req=requests.get("{}/info/{}".format(next(catCycle),id))
+    f.close()
+
+    if req.status_code == 200:
+        result=req.json() #content of json as dictionary
+
+        f = open('cache.json', 'r')
+        data = json.load(f)
+
+        if str(result["id"]) in data["ids"]:
+            return jsonify(result)
+
+        data["ids"][result["id"]] = result
+        f.close()
+
+        f = open('cache.json', 'w')
+        json.dump(data, f)
+        f.close()
+        return jsonify(result)
+
+    elif req.status_code == 404:
+        return 'The server has not found anything matching the given URL',404
+
+    else:
+        return 'Status code '+ str(req.status_code) +' indicates to something ERROR!',req.status_code
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=6000)
