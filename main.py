@@ -56,8 +56,8 @@ def searchByBookId(id):
     f = open('cache.json','r')
     data = json.load(f)
 
-    if id in data["ids"]:
-        if data["ids"][id] != None:
+    if str(id) in data["ids"]:
+        if data["ids"][str(id)] != None:
             return jsonify(data["ids"])
 
     req=requests.get("{}/info/{}".format(next(catCycle),id))
