@@ -58,7 +58,7 @@ def searchByBookId(id):
 
     if str(id) in data["ids"]:
         if data["ids"][str(id)] != None:
-            return jsonify(data["ids"])
+            return jsonify(data["ids"][str(id)])
 
     req=requests.get("{}/info/{}".format(next(catCycle),id))
     f.close()
