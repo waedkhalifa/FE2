@@ -93,11 +93,11 @@ def purchase(id):
 
     if req.status_code == 200:
         result = req.json()  # content of json as dictionary
-        req2 = requests.get("{}/purchase/{}".format(next(ordCycle), id))
-        if req2.status_code == 200:
-            return '',req.status_code
-        else:
-            return jsonify(result)
+        #req2 = requests.get("{}/purchase/{}".format(next(ordCycle), id))
+        #if req2.status_code == 200:
+        #    return '',req.status_code
+        #else:
+        return jsonify(result)
 
     elif req.status_code == 404:
         return 'The server has not found anything matching the URI given',404
